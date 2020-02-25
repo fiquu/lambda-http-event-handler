@@ -33,10 +33,10 @@ export default function handler(event: APIGatewayProxyEvent): APIGatewayProxyRes
   console.log(req.body);
 
   try {
-    res.send(noContent());
+    return res.send(noContent());
   } catch (err) {
     log.error('It failed...', { err });
-    res.handle(err);
+    return res.handle(err);
   }
 }
 ```
@@ -74,12 +74,12 @@ export default function handler(event: APIGatewayProxyEvent): APIGatewayProxyRes
   const { req, res } = createHTTPEvent(event, config);
 
   try {
-    res.render('the-view', {
+    return res.render('the-view', {
       body: req.body
     });
   } catch (err) {
     log.error('It failed...', { err });
-    res.render(err);
+    return res.render(err);
   }
 }
 ```
