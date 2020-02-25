@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>@fiquu/template | @fiquu/template</title>
+	<title>@fiquu/lambda-http-event-handler | @fiquu/lambda-http-event-handler</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">/*! normalize.css v1.1.3 | MIT License | git.io/normalize */
@@ -2335,7 +2335,7 @@ img {
 		<div class="container">
 			<div class="table-wrap">
 				<div class="table-cell">
-					<strong><a href="index.html">@fiquu/template</a></strong>
+					<strong><a href="index.html">@fiquu/lambda-http-event-handler</a></strong>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -2535,10 +2535,104 @@ img {
 <div class="container container-main">
 	<div class="content-wrap">
 		<div class="tsd-panel tsd-typography">
-			<a href="#template" id="template" style="color: inherit; text-decoration: none;">
-				<h1>template</h1>
+			<a href="#fiquulambda-http-event-handler" id="fiquulambda-http-event-handler" style="color: inherit; text-decoration: none;">
+				<h1>@fiquu/lambda-http-event-handler</h1>
 			</a>
-			<p>fiquu project template. Use this for new projects.</p>
+			<p>Lambda event handler for API Gateway HTTP requests.</p>
+			<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+				<h2>Installation</h2>
+			</a>
+			<pre><code>npm i <span class="hljs-meta">@fiquu</span>/lambda-http-event-<span class="hljs-keyword">handler</span></code></pre>
+			<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
+				<h2>Usage</h2>
+			</a>
+			<a href="#http-event" id="http-event" style="color: inherit; text-decoration: none;">
+				<h3>HTTP Event</h3>
+			</a>
+			<p>This will generate the necessary objects to handle an HTTP request graciously:</p>
+			<p><code>/api/my-path/handler.ts</code></p>
+			<pre><code class="language-ts"><span class="hljs-keyword">import</span> { noContent } <span class="hljs-keyword">from</span> <span class="hljs-string">'@fiquu/lambda-http-event-handler/responses'</span>;
+<span class="hljs-keyword">import</span> { createHTTPEvent } <span class="hljs-keyword">from</span> <span class="hljs-string">'@fiquu/lambda-http-event-handler'</span>;
+<span class="hljs-keyword">import</span> { createLogger } <span class="hljs-keyword">from</span> <span class="hljs-string">'@fiquu/logger'</span>;
+
+<span class="hljs-keyword">import</span> config <span class="hljs-keyword">from</span> <span class="hljs-string">'../../configs/http-event'</span>;
+
+<span class="hljs-keyword">const</span> log = createLogger(<span class="hljs-string">'HTTP /api/my-path'</span>);
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">handler</span>(<span class="hljs-params">event: APIGatewayProxyEvent</span>): <span class="hljs-title">APIGatewayProxyResult</span> </span>{
+  <span class="hljs-keyword">const</span> { req, res } = createHTTPEvent(event);
+
+  <span class="hljs-built_in">console</span>.log(req.headers);
+  <span class="hljs-built_in">console</span>.log(req.params);
+  <span class="hljs-built_in">console</span>.log(req.query);
+  <span class="hljs-built_in">console</span>.log(req.body);
+
+  <span class="hljs-keyword">try</span> {
+    res.send(noContent());
+  } <span class="hljs-keyword">catch</span> (err) {
+    log.error(<span class="hljs-string">'It failed...'</span>, { err });
+    res.handle(err);
+  }
+}</code></pre>
+			<a href="#view-rendering" id="view-rendering" style="color: inherit; text-decoration: none;">
+				<h3>View Rendering</h3>
+			</a>
+			<p><code>/configs/http-event.ts</code></p>
+			<pre><code class="language-ts"><span class="hljs-keyword">import</span> { StaticFileHandlerConfig } <span class="hljs-keyword">from</span> <span class="hljs-string">'@fiquu/lambda-http-event-handler/statics'</span>;
+
+<span class="hljs-keyword">const</span> config: StaticFileHandlerConfig = {
+  res: {
+    nonce: <span class="hljs-literal">true</span>,
+    views: {
+      basedir: join(__dirname, <span class="hljs-string">'..'</span>, <span class="hljs-string">'fixtures'</span>, <span class="hljs-string">'views'</span>),
+      locals: {}
+    }
+  }
+};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> config;</code></pre>
+			<p><code>/api/my-path/handler.ts</code></p>
+			<pre><code class="language-ts"><span class="hljs-keyword">import</span> { noContent } <span class="hljs-keyword">from</span> <span class="hljs-string">'@fiquu/lambda-http-event-handler/responses'</span>;
+<span class="hljs-keyword">import</span> { createHTTPEvent } <span class="hljs-keyword">from</span> <span class="hljs-string">'@fiquu/lambda-http-event-handler'</span>;
+<span class="hljs-keyword">import</span> { createLogger } <span class="hljs-keyword">from</span> <span class="hljs-string">'@fiquu/logger'</span>;
+
+<span class="hljs-keyword">import</span> config <span class="hljs-keyword">from</span> <span class="hljs-string">'./configs/http-event'</span>;
+
+<span class="hljs-keyword">const</span> log = createLogger(<span class="hljs-string">'HTTP /view-path'</span>);
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">handler</span>(<span class="hljs-params">event: APIGatewayProxyEvent</span>): <span class="hljs-title">APIGatewayProxyResult</span> </span>{
+  <span class="hljs-keyword">const</span> { req, res } = createHTTPEvent(event, config);
+
+  <span class="hljs-keyword">try</span> {
+    res.render(<span class="hljs-string">'the-view'</span>, {
+      body: req.body
+    });
+  } <span class="hljs-keyword">catch</span> (err) {
+    log.error(<span class="hljs-string">'It failed...'</span>, { err });
+    res.render(err);
+  }
+}</code></pre>
+			<a href="#static-file-serving" id="static-file-serving" style="color: inherit; text-decoration: none;">
+				<h3>Static File Serving</h3>
+			</a>
+			<p><code>/configs/statics.ts</code></p>
+			<pre><code class="language-ts"><span class="hljs-keyword">import</span> { StaticFileHandlerConfig } <span class="hljs-keyword">from</span> <span class="hljs-string">'@fiquu/lambda-http-event-handler/statics'</span>;
+
+<span class="hljs-keyword">const</span> config: StaticFileHandlerConfig = {
+  basedir: join(<span class="hljs-string">'..'</span>, <span class="hljs-string">'static'</span>)
+};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> config;</code></pre>
+			<p><code>/statics/handler.ts</code></p>
+			<pre><code class="language-ts"><span class="hljs-keyword">import</span> { createStaticFileHandler, StaticFileHandler } <span class="hljs-keyword">from</span> <span class="hljs-string">'@fiquu/lambda-http-event-handler/statics'</span>;
+
+<span class="hljs-keyword">import</span> config <span class="hljs-keyword">from</span> <span class="hljs-string">'../configs/statics'</span>;
+
+<span class="hljs-keyword">const</span> staticFileHandler: StaticFileHandler = createStaticFileHandler(config);
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">handler</span>(<span class="hljs-params">event: APIGatewayProxyEvent</span>): <span class="hljs-title">Promise</span>&lt;<span class="hljs-title">APIGatewayProxyResult</span>&gt; </span>{
+  <span class="hljs-keyword">return</span> staticFileHandler.get(event);
+}</code></pre>
 		</div>
 		<section class="tsd-panel-group tsd-index-group">
 			<h2>Index</h2>
@@ -2630,7 +2724,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">Get<wbr>File<wbr>Result<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">APIGatewayProxyResult</span><span class="tsd-signature-symbol">&gt;</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in statics.ts:74</li>
+						<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/statics.ts#L74">statics.ts:74</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -2643,7 +2737,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">_default<wbr>Response<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">APIGatewayProxyResult</span><span class="tsd-signature-symbol"> = Object.freeze&lt;APIGatewayProxyResult&gt;({statusCode: 200,body: &#x27;&quot;&quot;&#x27;,headers: {&#x27;Content-Type&#x27;: &#x27;application/json&#x27;}})</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in responses/base.ts:43</li>
+						<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/responses/base.ts#L43">responses/base.ts:43</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2658,7 +2752,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">defaults<span class="tsd-signature-symbol">:</span> <a href="interfaces/httpresponseparams.html" class="tsd-signature-type">HTTPResponseParams</a><span class="tsd-signature-symbol"> = Object.freeze&lt;HTTPResponseParams&gt;({body: &#x27;&#x27;,statusCode: Number(_defaultResponse.statusCode),headers: Object.freeze({&#x27;Content-Type&#x27;: &#x27;application/json&#x27;}),options: Object.freeze({json: true})})</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in responses/base.ts:54</li>
+						<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/responses/base.ts#L54">responses/base.ts:54</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2673,8 +2767,8 @@ img {
 				<div class="tsd-signature tsd-kind-icon">log<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Logger</span><span class="tsd-signature-symbol"> = createLogger(&#x27;HTTP Response&#x27;)</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in responses/base.ts:4</li>
-						<li>Defined in response.ts:8</li>
+						<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/responses/base.ts#L4">responses/base.ts:4</a></li>
+						<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/response.ts#L8">response.ts:8</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -2691,7 +2785,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in responses/index.ts:96</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/responses/index.ts#L96">responses/index.ts:96</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -2725,7 +2819,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in responses/index.ts:151</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/responses/index.ts#L151">responses/index.ts:151</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -2759,7 +2853,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in responses/base.ts:150</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/responses/base.ts#L150">responses/base.ts:150</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -2793,7 +2887,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in response.ts:62</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/response.ts#L62">response.ts:62</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -2816,7 +2910,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/d94822d/src/index.ts#L23">index.ts:23</a></li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/index.ts#L23">index.ts:23</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -2854,7 +2948,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in request.ts:92</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/request.ts#L92">request.ts:92</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -2880,13 +2974,13 @@ img {
 				<a name="createhttpresponse" class="tsd-anchor"></a>
 				<h3>createHTTPResponse</h3>
 				<ul class="tsd-signatures tsd-kind-function">
-					<li class="tsd-signature tsd-kind-icon">createHTTPResponse<span class="tsd-signature-symbol">(</span>config<span class="tsd-signature-symbol">: </span><a href="interfaces/httpresponseconfig.html" class="tsd-signature-type">HTTPResponseConfig</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/httpresponse.html" class="tsd-signature-type">HTTPResponse</a></li>
+					<li class="tsd-signature tsd-kind-icon">createHTTPResponse<span class="tsd-signature-symbol">(</span>config<span class="tsd-signature-symbol">?: </span><a href="interfaces/httpresponseconfig.html" class="tsd-signature-type">HTTPResponseConfig</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/httpresponse.html" class="tsd-signature-type">HTTPResponse</a></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in response.ts:186</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/response.ts#L186">response.ts:186</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -2897,7 +2991,7 @@ img {
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>config: <a href="interfaces/httpresponseconfig.html" class="tsd-signature-type">HTTPResponseConfig</a></h5>
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> config: <a href="interfaces/httpresponseconfig.html" class="tsd-signature-type">HTTPResponseConfig</a></h5>
 								<div class="tsd-comment tsd-typography">
 									<p>The HTTP response config.</p>
 								</div>
@@ -2918,7 +3012,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in responses/base.ts:104</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/responses/base.ts#L104">responses/base.ts:104</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -2961,7 +3055,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in statics.ts:159</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/statics.ts#L159">statics.ts:159</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -2993,7 +3087,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in views.ts:85</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/views.ts#L85">views.ts:85</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3027,7 +3121,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in views.ts:99</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/views.ts#L99">views.ts:99</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3059,7 +3153,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in responses/index.ts:48</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/responses/index.ts#L48">responses/index.ts:48</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3093,7 +3187,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in statics.ts:81</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/statics.ts#L81">statics.ts:81</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3116,7 +3210,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in responses/index.ts:118</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/responses/index.ts#L118">responses/index.ts:118</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3150,7 +3244,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in views.ts:55</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/views.ts#L55">views.ts:55</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3188,7 +3282,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in request.ts:77</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/request.ts#L77">request.ts:77</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3220,7 +3314,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in request.ts:32</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/request.ts#L32">request.ts:32</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3252,7 +3346,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in response.ts:81</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/response.ts#L81">response.ts:81</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3284,7 +3378,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in request.ts:51</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/request.ts#L51">request.ts:51</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3316,7 +3410,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in request.ts:64</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/request.ts#L64">request.ts:64</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3348,7 +3442,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in statics.ts:100</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/statics.ts#L100">statics.ts:100</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3386,7 +3480,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in response.ts:95</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/response.ts#L95">response.ts:95</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3425,7 +3519,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in responses/base.ts:92</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/responses/base.ts#L92">responses/base.ts:92</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3439,7 +3533,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in responses/index.ts:175</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/responses/index.ts#L175">responses/index.ts:175</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3462,7 +3556,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in responses/index.ts:72</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/responses/index.ts#L72">responses/index.ts:72</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3496,7 +3590,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in responses/index.ts:59</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/responses/index.ts#L59">responses/index.ts:59</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3530,7 +3624,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in responses/base.ts:72</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/responses/base.ts#L72">responses/base.ts:72</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3562,7 +3656,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in responses/index.ts:140</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/responses/index.ts#L140">responses/index.ts:140</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3596,7 +3690,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in responses/index.ts:129</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/responses/index.ts#L129">responses/index.ts:129</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3630,7 +3724,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in responses/index.ts:83</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/responses/index.ts#L83">responses/index.ts:83</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3664,7 +3758,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in responses/index.ts:37</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/responses/index.ts#L37">responses/index.ts:37</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3698,7 +3792,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in responses/index.ts:162</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/responses/index.ts#L162">responses/index.ts:162</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3732,7 +3826,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in views.ts:72</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/views.ts#L72">views.ts:72</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3776,7 +3870,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in response.ts:134</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/response.ts#L134">response.ts:134</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3814,7 +3908,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in responses/base.ts:124</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/responses/base.ts#L124">responses/base.ts:124</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3846,7 +3940,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in responses/index.ts:107</li>
+								<li>Defined in <a href="https://github.com/fiquu/lambda-http-event-handler/blob/9250fde/src/responses/index.ts#L107">responses/index.ts:107</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
