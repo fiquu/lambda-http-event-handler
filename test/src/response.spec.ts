@@ -33,13 +33,18 @@ describe('Response', function () {
     expect(createHTTPResponse).to.be.a('function');
   });
 
-  describe('configure', function () {
-    it('should configure with a valid config', function () {
-      let res;
+  it('should create an instance without a config', function () {
+    let res;
 
-      expect(() => res = createHTTPResponse(config)).to.not.throw();
-      expect(res).to.have.keys('render', 'send', 'handle');
-    });
+    expect(() => res = createHTTPResponse()).to.not.throw();
+    expect(res).to.have.keys('render', 'send', 'handle');
+  });
+
+  it('should create an instance with valid config', function () {
+    let res;
+
+    expect(() => res = createHTTPResponse(config)).to.not.throw();
+    expect(res).to.have.keys('render', 'send', 'handle');
   });
 
   describe('send', function () {

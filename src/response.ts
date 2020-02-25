@@ -183,10 +183,12 @@ function render(config: HTTPResponseConfig, view: string, values?: ViewLocalArg)
  *
  * @returns {object} The HTTP response handler instance.
  */
-export function createHTTPResponse(config: HTTPResponseConfig): HTTPResponse {
+export function createHTTPResponse(config?: HTTPResponseConfig): HTTPResponse {
+  const _config = { ...(config || {}) };
+
   return Object.freeze<HTTPResponse>({
-    render: render.bind(null, config),
-    handle: handle.bind(null, config),
-    send: send.bind(null, config)
+    render: render.bind(null, _config),
+    handle: handle.bind(null, _config),
+    send: send.bind(null, _config)
   });
 }
