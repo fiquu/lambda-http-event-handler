@@ -14,9 +14,29 @@ npm i @fiquu/lambda-http-event-handler
 
 This will generate the necessary objects to handle an HTTP request graciously:
 
+`/configs/http-event.ts`
+```ts
+import { conflict, badRequest } from '@fiquu/lambda-http-event-handler/lib/responses';
+import { HTTPEventConfig } from '@fiquu/lambda-http-event-handler';
+
+const handlers = new Map();
+
+handlers.set(11000, conflict);
+handlers.set('ValidationError', badRequest);
+
+const config: HTTPEventConfig = {
+  res: {
+    handlers
+  }
+};
+
+export default config;
+```
+
 `/api/my-path/handler.ts`
 ```ts
-import { noContent } from '@fiquu/lambda-http-event-handler/responses';
+import { noContent } from '@fiquu/lambda-http-event-handler/lib/responses';
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { createHTTPEvent } from '@fiquu/lambda-http-event-handler';
 import { createLogger } from '@fiquu/logger';
 
@@ -25,7 +45,7 @@ import config from '../../configs/http-event';
 const log = createLogger('HTTP /api/my-path');
 
 export default function handler(event: APIGatewayProxyEvent): APIGatewayProxyResult {
-  const { req, res } = createHTTPEvent(event);
+  const { req, res } = createHTTPEvent(event, config);
 
   console.log(req.headers);
   console.log(req.params);
