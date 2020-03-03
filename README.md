@@ -45,7 +45,7 @@ import config from '../../configs/http-event';
 const log = createLogger('HTTP /api/my-path');
 
 /**
- * Test handler function.
+ * My Function handler function.
  */
 export default function handler(event: APIGatewayProxyEvent): APIGatewayProxyResult {
   const { req, res } = createHTTPEvent(event, config);
@@ -85,7 +85,8 @@ export default config;
 
 `/api/my-path/handler.ts`
 ```ts
-import { noContent } from '@fiquu/lambda-http-event-handler/responses';
+import { noContent } from '@fiquu/lambda-http-event-handler/lib/responses';
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { createHTTPEvent } from '@fiquu/lambda-http-event-handler';
 import { createLogger } from '@fiquu/logger';
 
@@ -123,6 +124,7 @@ export default config;
 `/statics/handler.ts`
 ```ts
 import { createStaticFileHandler, StaticFileHandler } from '@fiquu/lambda-http-event-handler/statics';
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 import config from '../configs/statics';
 
