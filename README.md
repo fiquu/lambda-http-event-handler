@@ -33,7 +33,7 @@ const config: HTTPEventConfig = {
 export default config;
 ```
 
-`/api/my-path/handler.ts`
+`/service/my-function/handler.ts`
 ```ts
 import { noContent } from '@fiquu/lambda-http-event-handler/lib/responses';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
@@ -44,13 +44,16 @@ import config from '../../configs/http-event';
 
 const log = createLogger('HTTP /api/my-path');
 
+/**
+ * Test handler function.
+ */
 export default function handler(event: APIGatewayProxyEvent): APIGatewayProxyResult {
   const { req, res } = createHTTPEvent(event, config);
 
-  console.log(req.headers);
-  console.log(req.params);
-  console.log(req.query);
-  console.log(req.body);
+  log.debug(req.headers);
+  log.debug(req.params);
+  log.debug(req.query);
+  log.debug('Body:', req.body);
 
   try {
     return res.send(noContent());
