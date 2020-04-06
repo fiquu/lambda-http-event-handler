@@ -24,34 +24,34 @@
   },
   "homepage": "https://github.com/fiquu/lambda-http-event-handler#readme",
   "engines": {
-    "node": ">= 12",
-    "npm": ">= 6"
+    "node": ">=12.0.0",
+    "npm": ">=6.0.0"
   },
   "dependencies": {
-    "@fiquu/logger": "^1.0.0",
+    "@fiquu/logger": "^1.0.1",
     "@fiquu/nonce": "^1.0.1",
-    "@types/aws-lambda": "^8.10.44",
-    "@types/node": "^13.7.0",
     "etag": "^1.8.1",
-    "serverless-aws-static-file-handler": "^2.0.4",
+    "serverless-aws-static-file-handler": "^2.0.5",
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "@fiquu/eslint-config": "^2.0.0",
-    "@types/chai": "^4.2.8",
-    "@types/faker": "^4.1.9",
-    "@types/mocha": "^7.0.1",
-    "@typescript-eslint/eslint-plugin": "^2.19.0",
-    "@typescript-eslint/parser": "^2.19.0",
+    "@fiquu/eslint-config": "^3.0.2",
+    "@types/aws-lambda": "^8.10.47",
+    "@types/chai": "^4.2.11",
+    "@types/faker": "^4.1.11",
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^13.11.0",
+    "@typescript-eslint/eslint-plugin": "^2.26.0",
+    "@typescript-eslint/parser": "^2.26.0",
     "chai": "^4.2.0",
     "eslint": "^6.8.0",
     "faker": "^4.1.0",
     "fi-is": "^4.0.0",
-    "mocha": "^7.0.1",
-    "nyc": "^15.0.0",
+    "mocha": "^7.1.1",
+    "nyc": "^15.0.1",
     "pug-runtime": "^2.0.5",
-    "ts-node": "^8.6.2",
-    "typedoc": "^0.16.9",
-    "typescript": "^3.7.5"
+    "ts-node": "^8.8.2",
+    "typedoc": "^0.17.4",
+    "typescript": "^3.8.3"
   }
 }
