@@ -28,8 +28,8 @@
     "npm": ">=6.0.0"
   },
   "dependencies": {
-    "@fiquu/logger": "^1.0.1",
-    "@fiquu/nonce": "^1.0.1",
+    "@fiquu/logger": "^1.0.2",
+    "@fiquu/nonce": "^1.0.2",
     "etag": "^1.8.1",
     "serverless-aws-static-file-handler": "^2.0.5",
     "winston": "^3.2.1"
