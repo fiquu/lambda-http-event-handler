@@ -4,7 +4,7 @@ Lambda event handler for API Gateway HTTP requests.
 
 ## Installation
 
-```
+```sh
 npm i @fiquu/lambda-http-event-handler
 ```
 
@@ -15,6 +15,7 @@ npm i @fiquu/lambda-http-event-handler
 This will generate the necessary objects to handle an HTTP request graciously:
 
 `/configs/http-event.ts`
+
 ```ts
 import { conflict, badRequest } from '@fiquu/lambda-http-event-handler/lib/responses';
 import { HTTPEventConfig } from '@fiquu/lambda-http-event-handler';
@@ -34,6 +35,7 @@ export default config;
 ```
 
 `/service/my-function/handler.ts`
+
 ```ts
 import { noContent } from '@fiquu/lambda-http-event-handler/lib/responses';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
@@ -67,6 +69,7 @@ export default function handler(event: APIGatewayProxyEvent): APIGatewayProxyRes
 ### View Rendering
 
 `/configs/http-event.ts`
+
 ```ts
 import { StaticFileHandlerConfig } from '@fiquu/lambda-http-event-handler/statics';
 
@@ -84,6 +87,7 @@ export default config;
 ```
 
 `/api/my-path/handler.ts`
+
 ```ts
 import { noContent } from '@fiquu/lambda-http-event-handler/lib/responses';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
@@ -111,6 +115,7 @@ export default function handler(event: APIGatewayProxyEvent): APIGatewayProxyRes
 ### Static File Serving
 
 `/configs/statics.ts`
+
 ```ts
 import { StaticFileHandlerConfig } from '@fiquu/lambda-http-event-handler/statics';
 
@@ -122,6 +127,7 @@ export default config;
 ```
 
 `/statics/handler.ts`
+
 ```ts
 import { createStaticFileHandler, StaticFileHandler } from '@fiquu/lambda-http-event-handler/statics';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
