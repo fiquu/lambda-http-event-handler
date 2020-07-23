@@ -4,7 +4,7 @@
   "description": "fiquu project template.",
   "main": "lib/index.js",
   "scripts": {
-    "test": "LOG_LEVEL=none nyc mocha -r ts-node/register test/**/*.spec.ts",
+    "test": "LOG_LEVEL=none nyc mocha -r ts-node/register 'test/**/*.spec.ts'",
     "postversion": "git push --follow-tags",
     "build": "tsc && npm run docs",
     "docs": "typedoc",
