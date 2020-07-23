@@ -1,6 +1,6 @@
 {
   "name": "@fiquu/lambda-http-event-handler",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "fiquu project template.",
   "main": "lib/index.js",
   "scripts": {
