@@ -32,26 +32,26 @@
     "@fiquu/nonce": "^1.0.2",
     "etag": "^1.8.1",
     "serverless-aws-static-file-handler": "^2.0.5",
-    "winston": "^3.2.1"
+    "winston": "^3.3.3"
   },
   "devDependencies": {
-    "@fiquu/eslint-config": "^3.0.2",
-    "@types/aws-lambda": "^8.10.47",
-    "@types/chai": "^4.2.11",
-    "@types/faker": "^4.1.11",
-    "@types/mocha": "^7.0.2",
-    "@types/node": "^13.11.0",
-    "@typescript-eslint/eslint-plugin": "^2.26.0",
-    "@typescript-eslint/parser": "^2.26.0",
+    "@fiquu/eslint-config": "^3.0.8",
+    "@types/aws-lambda": "^8.10.59",
+    "@types/chai": "^4.2.12",
+    "@types/faker": "^4.1.12",
+    "@types/mocha": "^8.0.0",
+    "@types/node": "^12.12.51",
+    "@typescript-eslint/eslint-plugin": "^3.7.0",
+    "@typescript-eslint/parser": "^3.7.0",
     "chai": "^4.2.0",
-    "eslint": "^6.8.0",
+    "eslint": "^7.5.0",
     "faker": "^4.1.0",
     "fi-is": "^4.0.0",
-    "mocha": "^7.1.1",
-    "nyc": "^15.0.1",
-    "pug-runtime": "^2.0.5",
-    "ts-node": "^8.8.2",
-    "typedoc": "^0.17.4",
-    "typescript": "^3.8.3"
+    "mocha": "^8.0.1",
+    "nyc": "^15.1.0",
+    "pug-runtime": "^3.0.0",
+    "ts-node": "^8.10.2",
+    "typedoc": "^0.17.8",
+    "typescript": "^3.9.7"
   }
 }
