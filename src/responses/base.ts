@@ -1,4 +1,5 @@
-import { APIGatewayProxyResult } from 'aws-lambda';
+import type { APIGatewayProxyResult } from 'aws-lambda';
+
 import { createLogger } from '@fiquu/logger';
 
 const log = createLogger('HTTP Responses');
@@ -15,11 +16,15 @@ export interface HTTPResponseOptions {
   json?: boolean;
 }
 
+export interface HTTPResponseHeaders {
+  [header: string]: boolean | number | string;
+}
+
 export interface HTTPResponseParams {
   /**
    * The HTTP response headers to send.
    */
-  headers?: Record<string, string>;
+  headers?: HTTPResponseHeaders;
 
   /**
    * The HTTP response options.
@@ -29,7 +34,7 @@ export interface HTTPResponseParams {
   /**
    * The HTTP response body.
    */
-  body?: string | object;
+  body?: string | unknown;
 
   /**
    * The HTTP response code.
@@ -99,6 +104,12 @@ function internalServerError(): APIGatewayProxyResult {
 /**
  * Creates an HTTP response.
  *
+ * @param {object} params The parameter to create the response with.
+ * @param {number} params.statusCode The HTTP status code.
+ * @param {string} params.body The body content.
+ * @param {object} params.headers The headers object.
+ * @param {boolean} params.isBase64Encoded Whether the response is Base64 encoded.
+ *
  * @returns {object} The HTTP response.
  */
 function createResponse({ statusCode, body, headers, isBase64Encoded }): APIGatewayProxyResult {
@@ -107,7 +118,7 @@ function createResponse({ statusCode, body, headers, isBase64Encoded }): APIGate
     isBase64Encoded: Boolean(isBase64Encoded),
     statusCode: Math.trunc(statusCode),
     headers: {
-      ...headers
+      ...(headers || {})
     }
   };
 
@@ -121,7 +132,7 @@ function createResponse({ statusCode, body, headers, isBase64Encoded }): APIGate
  *
  * @returns {object} The JSON HTTP response object.
  */
-function setAsJSON(res: APIGatewayProxyResult): APIGatewayProxyResult {
+function asJSON(res: APIGatewayProxyResult): APIGatewayProxyResult {
   const _res = { ...res };
 
   try {
@@ -150,7 +161,7 @@ function setAsJSON(res: APIGatewayProxyResult): APIGatewayProxyResult {
 export function create(params: HTTPResponseParams): APIGatewayProxyResult {
   const { statusCode, headers, body, options }: HTTPResponseParams = normalizeParams(params);
 
-  if (statusCode < 100 || statusCode >= 600) {
+  if (statusCode < 100 || statusCode > 599) {
     log.error(`Response status code out of bounds: ${statusCode}`);
 
     return internalServerError();
@@ -160,7 +171,7 @@ export function create(params: HTTPResponseParams): APIGatewayProxyResult {
   const res = createResponse({ statusCode, headers, body, isBase64Encoded });
 
   if (!res.isBase64Encoded && options.json) {
-    return setAsJSON(res);
+    return asJSON(res);
   }
 
   return res;

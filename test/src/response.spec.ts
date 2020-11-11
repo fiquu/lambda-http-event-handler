@@ -22,6 +22,9 @@ describe('Response', function () {
 
     config = {
       handlers,
+      headers: {
+        'Default-Header': 'default value'
+      },
       views: {
         basedir: join(__dirname, '..', 'fixtures', 'views'),
         locals: {}
@@ -49,7 +52,7 @@ describe('Response', function () {
 
   describe('send', function () {
     it('should send an Internal Server Error (500) on empty response', function () {
-      const res = createHTTPResponse(null);
+      const res = createHTTPResponse(config);
       const response = res.send(null);
 
       expect(response).to.be.an('object');
@@ -57,7 +60,10 @@ describe('Response', function () {
       expect(response.statusCode).to.equal(500);
       expect(is.json(response.body)).to.be.true;
       expect(response.body).to.equal('""');
+      expect(response.headers).to.be.an('object').that.includes.keys('Default-Header');
+      expect(response.headers['Default-Header']).to.equal(config.headers['Default-Header']);
     });
+
     it('should send an Internal Server Error (500) on unknown response', function () {
       const res = createHTTPResponse(config);
       const _res = responses.create();
@@ -105,8 +111,9 @@ describe('Response', function () {
       expect(response).to.have.all.keys('statusCode', 'body', 'headers', 'isBase64Encoded');
       expect(response.statusCode).to.equal(200);
       expect(response.headers).to.be.an('object');
-      expect(response.headers).to.have.key('Content-Type');
+      expect(response.headers).to.have.keys('Content-Type', 'Default-Header');
       expect(response.headers['Content-Type']).to.equal('image/jpeg');
+      expect(response.headers['Default-Header']).to.equal(config.headers['Default-Header']);
       expect(is.json(response.body)).to.be.false;
       expect(response.body).to.equal(body);
     });
@@ -118,8 +125,9 @@ describe('Response', function () {
       expect(response).to.be.an('object');
       expect(response).to.have.all.keys('statusCode', 'body', 'headers', 'isBase64Encoded');
       expect(response.statusCode).to.equal(200);
-      expect(response.headers).to.have.key('Content-Type');
+      expect(response.headers).to.have.keys('Content-Type', 'Default-Header');
       expect(response.headers['Content-Type']).to.equal('application/json');
+      expect(response.headers['Default-Header']).to.equal(config.headers['Default-Header']);
       expect(is.json(response.body)).to.be.true;
       expect(response.body).to.equal('""');
     });
@@ -139,7 +147,8 @@ describe('Response', function () {
       expect(is.json(response.body)).to.be.true;
       expect(response.body).to.equal('"body"');
       expect(response.headers).to.be.an('object');
-      expect(response.headers).to.have.keys('Test', 'Content-Type');
+      expect(response.headers).to.have.keys('Test', 'Content-Type', 'Default-Header');
+      expect(response.headers['Default-Header']).to.equal(config.headers['Default-Header']);
       expect(response.headers.Test).to.equal('Header');
       expect(response.headers['Content-Type']).to.equal('application/json');
     });
@@ -196,7 +205,7 @@ describe('Response', function () {
         expect(is.json(response.body)).to.be.true;
         expect(response.body).to.equal(JSON.stringify(body));
         expect(response.headers).to.be.an('object');
-        expect(response.headers).to.have.keys('Content-Type', 'uuid');
+        expect(response.headers).to.have.keys('uuid', 'Content-Type');
         expect(response.headers.uuid).to.equal(uuid);
         expect(response.headers['Content-Type']).to.equal('application/json');
       }
@@ -230,7 +239,7 @@ describe('Response', function () {
         expect(response.statusCode).to.equal(500);
         expect(is.json(response.body)).to.be.true;
         expect(response.body).to.equal('""');
-        expect(response.headers).to.have.key('Content-Type');
+        expect(response.headers).to.have.keys('Content-Type');
         expect(response.headers['Content-Type']).to.equal('application/json');
       }
     });
@@ -264,7 +273,7 @@ describe('Response', function () {
         expect(is.json(response.body)).to.be.false;
         expect(response.body).to.equal(body);
         expect(response.headers).to.be.an('object');
-        expect(response.headers).to.have.keys('Content-Type', 'uuid');
+        expect(response.headers).to.have.keys('uuid', 'Content-Type');
         expect(response.headers['Content-Type']).to.equal('application/json');
         expect(response.headers.uuid).to.equal(uuid);
       }
@@ -376,8 +385,9 @@ describe('Response', function () {
       expect(response).to.be.an('object');
       expect(response).to.have.all.keys('statusCode', 'body', 'headers', 'isBase64Encoded');
       expect(response.statusCode).to.equal(200);
-      expect(response.headers).to.have.key('Content-Type');
+      expect(response.headers).to.have.keys('Content-Type', 'Default-Header');
       expect(response.headers['Content-Type']).to.equal('text/html');
+      expect(response.headers['Default-Header']).to.equal(config.headers['Default-Header']);
       expect(is.json(response.body)).to.be.false;
       expect(response.body).to.contain('<!DOCTYPE html>')
         .and.to.contain('</html>');
@@ -393,7 +403,8 @@ describe('Response', function () {
       expect(response).to.be.an('object');
       expect(response).to.have.all.keys('statusCode', 'body', 'headers', 'isBase64Encoded');
       expect(response.statusCode).to.equal(200);
-      expect(response.headers).to.have.key('Content-Type');
+      expect(response.headers).to.have.keys('Content-Type', 'Default-Header');
+      expect(response.headers['Default-Header']).to.equal(config.headers['Default-Header']);
       expect(response.headers['Content-Type']).to.equal('text/html');
       expect(is.json(response.body)).to.be.false;
       expect(response.body).to.contain('<!DOCTYPE html>')
@@ -412,7 +423,8 @@ describe('Response', function () {
       expect(response).to.be.an('object');
       expect(response).to.have.all.keys('statusCode', 'body', 'headers', 'isBase64Encoded');
       expect(response.statusCode).to.equal(200);
-      expect(response.headers).to.have.key('Content-Type');
+      expect(response.headers).to.have.keys('Content-Type', 'Default-Header');
+      expect(response.headers['Default-Header']).to.equal(config.headers['Default-Header']);
       expect(response.headers['Content-Type']).to.equal('text/html');
       expect(is.json(response.body)).to.be.false;
       expect(response.body).to.contain('<!DOCTYPE html>')
@@ -431,8 +443,9 @@ describe('Response', function () {
       expect(response).to.be.an('object');
       expect(response).to.have.all.keys('statusCode', 'body', 'headers', 'isBase64Encoded');
       expect(response.statusCode).to.equal(200);
-      expect(response.headers).to.have.key('Content-Type');
+      expect(response.headers).to.have.keys('Content-Type', 'Default-Header');
       expect(response.headers['Content-Type']).to.equal('text/html');
+      expect(response.headers['Default-Header']).to.equal(config.headers['Default-Header']);
       expect(is.json(response.body)).to.be.false;
       expect(response.body).to.contain('<!DOCTYPE html>')
         .and.to.match(/.+\snonce="[A-Za-z0-9_/+=]+".+/)

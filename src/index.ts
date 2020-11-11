@@ -1,4 +1,4 @@
-import { APIGatewayProxyEvent } from 'aws-lambda';
+import type { APIGatewayProxyEvent } from 'aws-lambda';
 
 import { createHTTPResponse, HTTPResponse, HTTPResponseConfig } from './response';
 import { createHTTPRequest, HTTPRequest } from './request';

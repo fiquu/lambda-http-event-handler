@@ -1,5 +1,9 @@
 import { join, normalize, resolve } from 'path';
 
+export interface ViewLocalProps {
+  [key: string]: string | number | unknown;
+}
+
 export interface ViewsConfig {
   /**
    * Absolute path to the base views templates directory.
@@ -9,13 +13,10 @@ export interface ViewsConfig {
   /**
    * View locals to assign on render.
    */
-  locals: {
-    [key: string]: string | number | object;
-  };
+  locals: ViewLocalProps;
 }
 
-export interface ViewLocals {
-  [key: string]: string | number | object;
+export interface ViewLocals extends ViewLocalProps {
   nonce: string;
 }
 
@@ -28,7 +29,7 @@ export interface ViewLoader {
    *
    * @returns {string} The rendered HTML.
    */
-  render(path: string, locals?: object): string;
+  render(path: string, locals?: ViewLocalProps): string;
 
   /**
    * Retrieves the template's function.
@@ -37,11 +38,7 @@ export interface ViewLoader {
    *
    * @returns {Function} The termplate function.
    */
-  get(path: string): Function;
-}
-
-export interface ViewLocalArg {
-  [key: string]: string | number | object;
+  get(path: string): CallableFunction;
 }
 
 /**
@@ -52,7 +49,7 @@ export interface ViewLocalArg {
  *
  * @returns {Function} The required template function.
  */
-function get(basedir: string, path: string): Function {
+function get(basedir: string, path: string): CallableFunction {
   const file = join(basedir, path);
   const resolved = resolve(normalize(file));
 
@@ -69,7 +66,7 @@ function get(basedir: string, path: string): Function {
  *
  * @returns {string} The rendered HTML string.
  */
-function render(basedir: string, path: string, locals?: object): string {
+function render(basedir: string, path: string, locals?: ViewLocalProps): string {
   const fn = get(basedir, path);
 
   return fn(locals);
@@ -79,6 +76,7 @@ function render(basedir: string, path: string, locals?: object): string {
  * Creates a new instance of Views.
  *
  * @param {object} config The configuration object.
+ * @param {string} config.basedir The base directory.
  *
  * @returns {object} The component instance.
  */
@@ -96,7 +94,7 @@ export function createViewLoader({ basedir }: ViewsConfig): ViewLoader {
  *
  * @returns {object} The merged locals values.
  */
-export function createViewLocals(...args: ViewLocalArg[]): ViewLocals {
+export function createViewLocals(...args: ViewLocalProps[]): ViewLocals {
   return {
     ...args.reduce((acc, curr) => Object.assign(acc, curr)),
     nonce: null

@@ -2,7 +2,7 @@ import { APIGatewayProxyResult } from 'aws-lambda';
 import { createLogger } from '@fiquu/logger';
 import nonce from '@fiquu/nonce';
 
-import { createViewLoader, createViewLocals, ViewsConfig, ViewLocals, ViewLoader, ViewLocalArg } from './views';
+import { createViewLoader, createViewLocals, ViewsConfig, ViewLocals, ViewLoader, ViewLocalProps } from './views';
 import * as responses from './responses';
 
 const log = createLogger('HTTP Response');
@@ -12,6 +12,11 @@ export interface HTTPResponseConfig {
    * Error handlers.
    */
   handlers?: Map<number | string, responses.HTTPResponseFunction>;
+
+  /**
+   * Default headers.
+   */
+  headers?: Record<string, string>;
 
   /**
    * Views configuration.
@@ -51,19 +56,22 @@ export interface HTTPResponse {
    *
    * @returns {object} The HTTP response object.
    */
-  render(view: string, values?: ViewLocalArg): APIGatewayProxyResult;
+  render(view: string, values?: ViewLocalProps): APIGatewayProxyResult;
 }
 
 /**
  * Creates the HTTP response params object.
  *
+ * @param {object} config The config object.
+ *
  * @returns {object} The HTTP response params object.
  */
-function createHTMLResponseParams(): responses.HTTPResponseParams {
+function createHTMLResponseParams(config: HTTPResponseConfig): responses.HTTPResponseParams {
   return {
     body: null,
     headers: {
-      'Content-Type': 'text/html'
+      'Content-Type': 'text/html',
+      ...(config && config.headers || {})
     },
     options: {
       json: false
@@ -93,28 +101,36 @@ function getNonce(size: number | boolean): string {
  * @returns {object} The handled HTTP response object.
  */
 function handle(config: HTTPResponseConfig, error?: Error): APIGatewayProxyResult {
-  let response = responses.internalServerError();
+  let response = responses.internalServerError({
+    headers: config.headers
+  });
 
-  if (error && config.handlers) {
+  if (error && config.handlers && config.handlers.size > 0) {
     // Handle known Error names.
     if (error['name'] && config.handlers.has(error['name'])) {
       const handledError = config.handlers.get(error['name']);
 
-      response = handledError();
+      response = handledError({
+        headers: config.headers
+      });
     }
 
     // Handle known Error messages.
     if (error['message'] && config.handlers.has(error['message'])) {
       const handledError = config.handlers.get(error['message']);
 
-      response = handledError();
+      response = handledError({
+        headers: config.headers
+      });
     }
 
     // Handle known Error codes.
     if (error['code'] && config.handlers.has(error['code'])) {
       const handledError = config.handlers.get(error['code']);
 
-      response = handledError();
+      response = handledError({
+        headers: config.headers
+      });
     }
   }
 
@@ -134,12 +150,20 @@ function handle(config: HTTPResponseConfig, error?: Error): APIGatewayProxyResul
 function send(config: HTTPResponseConfig, response: APIGatewayProxyResult): APIGatewayProxyResult {
   // Process empty responses as Internal Server Error (500).
   if (!response) {
-    return responses.internalServerError();
+    return responses.internalServerError({
+      headers: config.headers
+    });
   }
 
   // Send response if it's an instance of Response.
   if (response['statusCode'] && response['body']) {
-    return { ...response };
+    return {
+      ...response,
+      headers: {
+        ...response.headers,
+        ...(config.headers || {})
+      }
+    };
   }
 
   log.error('Handling unknown error response', { response });
@@ -156,9 +180,9 @@ function send(config: HTTPResponseConfig, response: APIGatewayProxyResult): APIG
  *
  * @returns {object} The HTTP response object.
  */
-function render(config: HTTPResponseConfig, view: string, values?: ViewLocalArg): APIGatewayProxyResult {
+function render(config: HTTPResponseConfig, view: string, values?: ViewLocalProps): APIGatewayProxyResult {
   try {
-    const params: responses.HTTPResponseParams = createHTMLResponseParams();
+    const params: responses.HTTPResponseParams = createHTMLResponseParams(config);
     const locals: ViewLocals = createViewLocals(config.views && config.views.locals, values);
     const views: ViewLoader = createViewLoader(config.views);
 

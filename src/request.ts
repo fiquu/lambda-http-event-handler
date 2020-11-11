@@ -1,10 +1,10 @@
-import { APIGatewayProxyEvent } from 'aws-lambda';
+import type { APIGatewayProxyEvent } from 'aws-lambda';
 
 export interface HTTPRequest {
   /**
    * The request body.
    */
-  body: object | string | number | boolean | null;
+  body: string | number | boolean | null | unknown;
 
   /**
    * The request headers.
@@ -74,7 +74,7 @@ function getQuery(event: APIGatewayProxyEvent): Map<string, string> {
  *
  * @returns {object|string|number|boolean|null} The HTTP request body.
  */
-function getBody(event: APIGatewayProxyEvent): object | string | number | boolean | null {
+function getBody(event: APIGatewayProxyEvent): string | number | boolean | null | unknown {
   try {
     return JSON.parse(event.body);
   } catch (err) { }
@@ -98,7 +98,7 @@ export function createHTTPRequest(event: APIGatewayProxyEvent): HTTPRequest {
     /**
      * @returns {object|string} The request body, parsed as JSON if possible.
      */
-    get body(): object | string | number | boolean | null {
+    get body(): string | number | boolean | null | unknown {
       return getBody(event);
     },
 
